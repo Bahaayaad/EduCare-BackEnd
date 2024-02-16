@@ -1,32 +1,5 @@
-const User = require("../models/User");
-const jwt = require ("jsonwebtoken");
-const handleErrors = (err) => {
-  let errors = { username: '', password: '' };
-
-  if (err.message === 'incorrect username') {
-    errors.username = 'That email is not registered';
-  }
-
-  // incorrect password
-  if (err.message === 'incorrect password') {
-    errors.password = 'That password is incorrect';
-  }
-
-  // duplicate username error
-  if (err.code === 11000) {
-    errors.username = 'that email is already registered';
-    return errors;
-  }
-
-  // validation errors
-  if (err.message.includes('user validation failed')) {
-    Object.values(err.errors).forEach(({ properties }) => {
-      errors[properties.path] = properties.message;
-    });
-  }
-
-  return errors;
-}
+const User = require("../models/User")
+const jwt = require ("jsonwebtoken")
 
 const tokenDuration =  5 * 60 * 60 * 1000;
 const createToken = (id) => {
@@ -45,8 +18,7 @@ module.exports.signup = async (req, res) => {
         res.status(201).json({user:user._id});
     }
     catch(err) {
-        const errors = handleErrors(err);
-        res.status(400).json({ errors });
+        res.status(400).json(err.message);
     }
   }
   
