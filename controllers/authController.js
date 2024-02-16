@@ -8,6 +8,10 @@ const createToken = (id) => {
   });
 };
 module.exports.signup = async (req, res) => {
+    console.log("Initial " + req.user)
+    const user  = await User.findById(req.user)
+    if(user.role!=='admin')
+        return res.status(401).json("unauthorized access");
     // const { username, email, password, role, gender, major, address, name } = req.body[0];
     
     for (let index in req.body) {
@@ -18,9 +22,6 @@ module.exports.signup = async (req, res) => {
       const { username, email, password, role, gender, major, address, name } = student;
       try {
           const user = await User.create({ username, email, password, role, gender, major, address, name });
-          // const token  = createToken(user._id);
-          // res.cookie('jwt',token, { maxAge:tokenDuration});
-          // console.log("here's what I have created: " + token);
           res.status(201).json({user:user._id});
       }
       catch(err) {
