@@ -8,19 +8,21 @@ const createToken = (id) => {
   });
 };
 module.exports.signup = async (req, res) => {
-    console.log("Initial " + req.user)
+console.log("Initial " + req.user)
     const user  = await User.findById(req.user)
     if(user.role!=='admin')
         return res.status(401).json("unauthorized access");
     // const { username, email, password, role, gender, major, address, name } = req.body[0];
-    
+    var counter = 0;
     for (let index in req.body) {
       console.log(`Student ${index}:`);
       const student = req.body[index];
       console.log('This is student: ')
       console.log(student)
+      
       const { username, email, password, role, gender, major, address, name } = student;
       try {
+        console.log(++counter);
           const user = await User.create({ username, email, password, role, gender, major, address, name });
           res.status(201).json({user:user._id});
       }
@@ -30,7 +32,6 @@ module.exports.signup = async (req, res) => {
           res.status(400).json(err.message);
       }
     }
-
   }
   
 module.exports.login= async (req, res) => {
@@ -40,7 +41,7 @@ module.exports.login= async (req, res) => {
         console.log(user)
         const token = createToken(user._id);
         res.cookie('jwt',token, {/*httpOnly: true,*/ maxAge:tokenDuration, sameSite:"none", secure:true});
-        res.status(200).json({id:user._id, role:user.role});
+        res.status(200).json({id:user._id, role:user.role, token:token});
 
     }catch(err){
         res.status(400).json({});

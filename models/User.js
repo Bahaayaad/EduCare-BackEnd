@@ -7,7 +7,8 @@ const hbs = require('nodemailer-express-handlebars')
 
 // Create a server to send a generated password to  a student
 const sendEmail = async (email, password) =>{
-    console.log("wow")
+    if(email == null || email == undefined)
+      return 
     var transporter = nodemailer.createTransport(
         {
             host: 'smtp.gmail.com',

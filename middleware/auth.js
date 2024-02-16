@@ -4,7 +4,8 @@ const config = process.env;
 
 const verifyTokenAuth = (req, res, next) => {
   const token = req.cookies.jwt;
-  console.log("lets see this : "+ token)
+  console.log("body: %j", req.cookies)
+  // console.log("lets see this : "+ req.cookies)
 
   if (!token) {
     return res.status(403).send("A token is required for authentication");
