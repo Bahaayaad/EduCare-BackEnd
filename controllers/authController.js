@@ -8,18 +8,28 @@ const createToken = (id) => {
   });
 };
 module.exports.signup = async (req, res) => {
-    const { username, email, password, role, gender, major, address, name } = req.body;
+    // const { username, email, password, role, gender, major, address, name } = req.body[0];
+    
+    for (let index in req.body) {
+      console.log(`Student ${index}:`);
+      const student = req.body[index];
+      console.log('This is student: ')
+      console.log(student)
+      const { username, email, password, role, gender, major, address, name } = student;
+      try {
+          const user = await User.create({ username, email, password, role, gender, major, address, name });
+          // const token  = createToken(user._id);
+          // res.cookie('jwt',token, { maxAge:tokenDuration});
+          // console.log("here's what I have created: " + token);
+          res.status(201).json({user:user._id});
+      }
+      catch(err) {
+        console.log("whatever: "+name)
+        console.log(err.message)
+          res.status(400).json(err.message);
+      }
+    }
 
-    try {
-        const user = await User.create({ username, email, password, role, gender, major, address, name });
-        const token  = createToken(user._id);
-        res.cookie('jwt',token, { maxAge:tokenDuration});
-        console.log("here's what I have created: " + token);
-        res.status(201).json({user:user._id});
-    }
-    catch(err) {
-        res.status(400).json(err.message);
-    }
   }
   
 module.exports.login= async (req, res) => {
