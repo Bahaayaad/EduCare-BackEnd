@@ -30,5 +30,20 @@ module.exports.listStudents = async (req, res) => {
         res.status(404).json({ message: 'No students found' })
     }
 }
+module.exports.deleteStudent = async (req, res) =>{
+    console.log("test test")
+    const userId = String(req.params.id)
+    console.log("wow wow", userId)
+    try {
+        await User.deleteOne({userId: userId})
+        res.status(200).json({userId})
+    }catch (err){
+        console.log(err.message)
+        res.status(400).json(err.message)
+    }
+
+
+
+}
 
 
