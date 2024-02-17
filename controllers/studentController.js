@@ -3,31 +3,42 @@ const Course = require("../models/Section")
 module.exports.listStudents = async (req, res) => {
     const user  = await User.findById(req.user)
     let students = []
-    if(user.role ==='admin')
-        students  = await User.find({role:'student'})
+    if(user.role ==='admin') {
+        try {
+            students = await User.find({role: 'student'})
+        }catch (err){
+            return res.status(400).json("Some error occurred while fetching the students")
+        }
+
+    }
     else if(user.role === 'teacher') {
-        const courses = [user.courses]
+        const sections = [user.sections]
         await Promise.all(
-            courses.map(async (courseId) => {
-                const course = await Course.findById(courseId)
-                const studentsCourse = course.students
-                for (const studentsId of studentsCourse) {
-                    name = (await User.findById(studentsId).exec()).userId
-                    students.push(name)
+            sections.map(async (sectionId) => {
+                try {
+                    const section = await Course.findById(sectionId)
+                    const studentsSection = section.students
+                    for (const studentsId of studentsSection) {
+                        name = (await User.findById(studentsId, {}, {}).exec()).toString()
+                        students.push(name)
+                    }
+                }catch (err){
+                    return res.status(400).json("some error occurred while fetching the students")
                 }
+
             })
         )
-        console.log(courses)
+        console.log(sections)
     }
     else{
-        res.status(401).json({ message: 'Unauthorized' })
+        return res.status(401).json({ message: 'Unauthorized' })
     }
 
     if (students.length) {
         console.log(JSON.stringify(students))
-        res.status(200).json(students)
+        return res.status(200).json(students)
     } else {
-        res.status(404).json({ message: 'No students found' })
+        return res.status(404).json("No students where found")
     }
 }
 module.exports.deleteStudent = async (req, res) =>{
