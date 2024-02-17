@@ -42,6 +42,7 @@ module.exports.login= async (req, res) => {
         console.log(user)
         const token = createToken(user._id);
         res.cookie('jwt',token, {/*httpOnly: true,*/ maxAge:tokenDuration, sameSite:"none", secure:true});
+        res.cookie('role',user.role,{maxAge:tokenDuration, sameSite:"none",secure:true})
         res.status(200).json({id:user._id, role:user.role, token:token});
 
     }catch(err){
@@ -52,3 +53,10 @@ module.exports.login= async (req, res) => {
   module.exports.logout = (req, res) =>{
     res.cookie('jwt', '', {maxAge: 1});
   }
+
+  module.exports.tokenValidate= async (req, res)=>{
+      const user = await User.findById(req.user)
+      console.log('why tho ' + user.role)
+      res.status(200).json(user.role)
+  }
+

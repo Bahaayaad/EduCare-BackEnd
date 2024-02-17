@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 const courseSchema = new mongoose.Schema({
     username:{
        type: String,
-        required: true
+        required: true,
+        unique:[true, 'The course already has been created']
 
     },
     description:{

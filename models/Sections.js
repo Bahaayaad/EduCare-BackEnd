@@ -4,25 +4,25 @@ const sectionSchema = new mongoose.Schema({
         type: String,
         required:[true, "section id is required"]
     },
-    teachers: {
+    teacher: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    students: { 
+    students: {
         type: [{
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User'
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
         }],
         default: []
-      },
+    },
     course:{
         type: mongoose.Schema.Types.ObjectId,
         required:[true, "course is required"],
         ref:'Course'
     }
-  });
+});
 
-const Section = mongoose.model('sections', sectionSchema);
+const Section = mongoose.model('Sections', sectionSchema);
 
 
 module.exports = Section;

@@ -1,14 +1,15 @@
 const User = require("../models/User");
-const Section = require("../models/Section")
+const Section = require("../models/Sections")
 const Courses = require("../models/Courses")
 
 const updateSec = async (studentsIds, teacherId, courseId, section) =>{
     if(studentsIds.length)
     await Promise.all(
-        studentIds.map(async (studentId) => {
+        studentsIds.map(async (studentId) => {
+            console.log("almost there " + studentId)
             const user = await User.findByIdAndUpdate(
                 studentId,
-                { $push: { sectionss: section._id } },
+                { $push: { sections: section._id } },
                 { new: true }
             );
         })
@@ -40,26 +41,41 @@ module.exports.createSection = async (req, res) => {
         // gather student ids
         if(students !=null)
         for (const student of students) {
-            const studentId = await User.findOne({username: student}).exec()
-            studentIds.push(studentId._id)
+            try {
+                const studentId = await User.findOne({userId: student, role: "student"}).exec()
+                console.log("??? " + studentId)
+                studentIds.push(studentId._id)
+            }catch (err){
+                return res.status(400).json("The student " + student + ' does not exist')
+            }
         }
+        console.log("test test "+studentIds)
 
         // get teacher id
-        const tId = await User.findOne({username: teacher}).exec()
-        teacherId = tId._id
+        console.log("ma 7beet " + teacher)
+        if(teacher) {
+            const tId = await User.findOne({userId: teacher, role: 'teacher'}).exec()
+            teacherId = tId._id
+        }else {
+            return res.status(400).json('Teacher was not found')
+        }
 
         // get course id
-        const cId = await Courses.findOne({username: course}).exec()
-        courseId = cId._id
+        if(course) {
+            const cId = await Courses.findOne({username: course}).exec()
+            courseId = cId._id
+        }else {
+            return res.status(400).json('Course was not found')
+        }
 
         // create a new section
-        const section = await Section.create({username, students:studentIds, teachers:teacherId, course:courseId})
+        const section = await Section.create({username, students:studentIds, teacher:teacherId, course:courseId})
 
         // Update user (student, teacher) documents, and update Course document
         await updateSec(studentIds, teacherId, courseId, section)
 
         console.log(JSON.stringify(section));
-        res.status(201).json({})
+        res.status(201).json({section})
 
     } catch (err) {
         console.log(err)
@@ -71,10 +87,14 @@ module.exports.createCourses = async(req, res) =>{
     try{
         const course = await Courses.create({username, description})
         console.log(JSON.stringify(course));
-        res.status(201).json({})
+        res.status(201).json(course)
     }catch (err){
         console.log(err)
         res.status(400).json({message: "error when creating the course"})
     }
-
+}
+module.exports.soonToDelete = async (req, res) =>{
+    const first = await Section.deleteMany({})
+    const second = await Courses.deleteMany({})
+    res.status(200).json("cool")
 }

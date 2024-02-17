@@ -1,5 +1,5 @@
 const User = require("../models/User")
-const Course = require("../models/Section")
+const Section = require("../models/Sections")
 module.exports.listStudents = async (req, res) => {
     const user  = await User.findById(req.user)
     let students = []
@@ -13,21 +13,27 @@ module.exports.listStudents = async (req, res) => {
     }
     else if(user.role === 'teacher') {
         const sections = [user.sections]
+        let flag = 0
         await Promise.all(
             sections.map(async (sectionId) => {
                 try {
-                    const section = await Course.findById(sectionId)
+                    const section = await Section.findById(sectionId)
                     const studentsSection = section.students
                     for (const studentsId of studentsSection) {
-                        name = (await User.findById(studentsId, {}, {}).exec()).toString()
+                        name = (await User.findById(studentsId, {}, {}).exec())
                         students.push(name)
                     }
                 }catch (err){
-                    return res.status(400).json("some error occurred while fetching the students")
+                    console.log("Let's check " + err.message)
+                    flag = 1
+                    console.log("This is what I call shit")
+
                 }
 
             })
         )
+        if(req.status ===400)
+            return res.status(400).json("some error occurred while fetching the students")
         console.log(sections)
     }
     else{
@@ -52,8 +58,6 @@ module.exports.deleteStudent = async (req, res) =>{
         console.log(err.message)
         res.status(400).json(err.message)
     }
-
-
 
 }
 
