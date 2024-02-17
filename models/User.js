@@ -30,48 +30,53 @@ const sendEmail = async (email, password) =>{
 }
 const userSchema = new mongoose.Schema({
   userId: {
-    type: String,
-    required: [true, "is Empty"],
-    unique: [true, "the userId is not unique"],
-    lowercase: true,
+      type: String,
+      required: [true, "is Empty"],
+      unique: [true, "the userId is not unique"],
+      lowercase: true
   },
   name:{
-    type:String,
-    required:true
+      type:String,
+      required:true,
+      lowercase:true
   },
   password: {
-    type: String,
-    minlength: [6, "the length is less than 6 characters"],
+      type: String,
+      minlength: [6, "the length is less than 6 characters"],
       default:null
   },
   email:{
-    type: String,
-    required:false,
-    lowercase:true,
-    validate:[isEmail ,'please enter a valid email']
+      type: String,
+      required:false,
+      lowercase:true,
+      validate:[isEmail ,'please enter a valid email']
   },
   role:{
-    type:String,
-    required: true,
-    enum:['admin', 'teacher', 'student']
+      type:String,
+      required: true,
+      lowercase:true,
+      enum:['admin', 'teacher', 'student']
   },
   gender:{
-    type: String,
-    enum:['male', 'female']
+      type: String,
+      lowercase:true,
+      enum:['male', 'female']
   },
 
   major:{
-    type: String
+      type: String,
+      lowercase:true
   },
   address:{
-    type: String
+      type: String,
+      lowercase:true
   },
   sections: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Section'
-    }],
-    default: []
+      type: [{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Section'
+      }],
+      default: []
   }
 
 });
@@ -98,7 +103,6 @@ userSchema.statics.login = async function(userId, password) {
     const user = await this.findOne({userId});
     if(user){
        const auth = await bcrypt.compare(password, user.password);
-       console.log("hohohohohoh")
        if(auth){
         return user;
        }

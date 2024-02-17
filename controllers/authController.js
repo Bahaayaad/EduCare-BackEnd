@@ -7,6 +7,7 @@ const createToken = (id) => {
     expiresIn: tokenDuration
   });
 };
+
 module.exports.signup = async (req, res) => {
     console.log("Fefefef");
 console.log("Initial " + req.user)
