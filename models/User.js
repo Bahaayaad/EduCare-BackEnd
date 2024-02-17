@@ -29,10 +29,10 @@ const sendEmail = async (email, password) =>{
         })
 }
 const userSchema = new mongoose.Schema({
-  username: {
+  userId: {
     type: String,
     required: [true, "is Empty"],
-    unique: [true, "the username is taken"],
+    unique: [true, "the userId is not unique"],
     lowercase: true,
   },
   name:{
@@ -94,8 +94,8 @@ userSchema.pre('save',async function (next) {
     next();
   });
 
-userSchema.statics.login = async function(username, password) { 
-    const user = await this.findOne({username});
+userSchema.statics.login = async function(userId, password) {
+    const user = await this.findOne({userId});
     if(user){
        const auth = await bcrypt.compare(password, user.password);
        console.log("hohohohohoh")
@@ -104,7 +104,7 @@ userSchema.statics.login = async function(username, password) {
        }
        throw Error('incorrect password');
     }
-    throw Error('invalid username');
+    throw Error('invalid userid');
 }
 const User = mongoose.model('user', userSchema);
 

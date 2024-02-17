@@ -13,7 +13,6 @@ console.log("Initial " + req.user)
     const user  = await User.findById(req.user)
     if(user.role!=='admin')
         return res.status(401).json("unauthorized access");
-    // const { username, email, password, role, gender, major, address, name } = req.body[0];
     var counter = 0;
     for (let index in req.body) {
       console.log(`Student ${index}:`);
@@ -21,10 +20,10 @@ console.log("Initial " + req.user)
       console.log('This is student: ')
       console.log(student)
       
-      const { username, email, password, role, gender, major, address, name } = student;
+      const { userId, email, password, role, gender, major, address, name } = student;
       try {
         console.log(++counter);
-          const user = await User.create({ username, email, password, role, gender, major, address, name });
+          const user = await User.create({ userId, email, password, role, gender, major, address, name });
       }
       catch(err) {
         console.log("whatever: "+name)
@@ -36,19 +35,19 @@ console.log("Initial " + req.user)
 }
   
 module.exports.login= async (req, res) => {
-    const {username, password} = req.body;
+    const {userId, password} = req.body;
     try{
-        const user = await User.login(username,password);
+        const user = await User.login(userId,password);
         console.log(user)
         const token = createToken(user._id);
         res.cookie('jwt',token, {/*httpOnly: true,*/ maxAge:tokenDuration, sameSite:"none", secure:true});
         res.status(200).json({id:user._id, role:user.role, token:token});
 
     }catch(err){
-        res.status(400).json({});
+        res.status(400).json(err.message);
     }
   }
 
   module.exports.logout = (req, res) =>{
-    res.cookie('jwt', '', {maxAge: 1}); 
+    res.cookie('jwt', '', {maxAge: 1});
   }

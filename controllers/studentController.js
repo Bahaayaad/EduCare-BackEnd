@@ -12,9 +12,8 @@ module.exports.listStudents = async (req, res) => {
                 const course = await Course.findById(courseId)
                 const studentsCourse = course.students
                 for (const studentsId of studentsCourse) {
-                    name = (await User.findById(studentsId).exec()).username
+                    name = (await User.findById(studentsId).exec()).userId
                     students.push(name)
-
                 }
             })
         )
