@@ -4,7 +4,7 @@ const config = process.env;
 
 const verifyTokenAuth = (req, res, next) => {
   const token = req.cookies.jwt;
-  console.log("body: %j", req.cookies)
+  console.log("body here: %j", req.cookies)
   // console.log("lets see this : "+ req.cookies)
 
   if (!token) {

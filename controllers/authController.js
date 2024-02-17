@@ -8,6 +8,7 @@ const createToken = (id) => {
   });
 };
 module.exports.signup = async (req, res) => {
+    console.log("Fefefef");
 console.log("Initial " + req.user)
     const user  = await User.findById(req.user)
     if(user.role!=='admin')
@@ -24,15 +25,15 @@ console.log("Initial " + req.user)
       try {
         console.log(++counter);
           const user = await User.create({ username, email, password, role, gender, major, address, name });
-          res.status(201).json({user:user._id});
       }
       catch(err) {
         console.log("whatever: "+name)
         console.log(err.message)
-          res.status(400).json(err.message);
+          return res.status(400).json(err.message);
       }
     }
-  }
+    res.status(201).json({user:user._id});
+}
   
 module.exports.login= async (req, res) => {
     const {username, password} = req.body;
