@@ -24,17 +24,13 @@ module.exports.listStudents = async (req, res) => {
                         students.push(name)
                     }
                 }catch (err){
-                    console.log("Let's check " + err.message)
-                    flag = 1
-                    console.log("This is what I call shit")
-
+                    flag =1
                 }
 
             })
         )
-        if(req.status ===400)
+        if(!students)
             return res.status(400).json("some error occurred while fetching the students")
-        console.log(sections)
     }
     else{
         return res.status(401).json({ message: 'Unauthorized' })
@@ -48,10 +44,9 @@ module.exports.listStudents = async (req, res) => {
     }
 }
 module.exports.deleteStudent = async (req, res) =>{
-    console.log("test test")
     const userId = String(req.params.id)
-    console.log("wow wow", userId)
     try {
+        await User.deleteUserFromSections(userId)
         await User.deleteOne({userId: userId})
         res.status(200).json({userId})
     }catch (err){

@@ -46,6 +46,7 @@ module.exports.login= async (req, res) => {
         res.status(200).json({id:user._id, role:user.role, token:token});
 
     }catch(err){
+        console.log(err.message)
         res.status(400).json(err.message);
     }
   }
@@ -56,7 +57,6 @@ module.exports.login= async (req, res) => {
 
   module.exports.tokenValidate= async (req, res)=>{
       const user = await User.findById(req.user)
-      console.log('why tho ' + user.role)
       res.status(200).json(user.role)
   }
 

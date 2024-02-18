@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const generator = require('generate-password')
 const nodemailer = require('nodemailer')
 const hbs = require('nodemailer-express-handlebars')
+const Section = require("../models/Sections")
 
 // Create a server to send a generated password to  a student
 const sendEmail = async (email, password) =>{
@@ -79,11 +80,11 @@ const userSchema = new mongoose.Schema({
       default: []
   }
 
-});
+})
 userSchema.post('save', function(doc, next){
     this.password
     next();
-});
+})
 
 userSchema.pre('save',async function (next) {
     if(this.password === null) {
@@ -97,7 +98,56 @@ userSchema.pre('save',async function (next) {
     const salt = await bcrypt.genSalt();
     this.password = await bcrypt.hash(this.password, salt);
     next();
-  });
+  })
+const deleteStudent = async (sections, id) =>{
+    try{
+        await Promise.all(sections.map(
+            async (sectionId) =>{
+                console.log("wow lets see this: " + sectionId)
+                const les = await Section.updateOne(
+                    {_id:sectionId},
+                    {$pull: {
+                            students:id
+                        }}
+                )
+            }
+        ))
+
+    }catch (err){
+        return err
+    }
+}
+
+const deleteTeacher = async (sections, id) =>{
+    try{
+        await Promise.all(sections.map(
+            async (sectionId) =>{
+                mongoose.model('Sections').updateOne(
+                    {_id:sectionId},
+                    {$pull: {
+                            teachers:id
+                        }}
+                )
+            }
+        ))
+
+    }catch (err){
+        return err
+    }
+}
+userSchema.statics.deleteUserFromSections = async function(userId){
+    if(!userId) return
+    const user = await this.findOne({userId})
+    console.log("fewafaewffwefwesf " + userId)
+    if(!user.sections) return
+    if(user.role === 'student')
+        await deleteStudent(user.sections, user._id)
+    if(user.role === 'teacher')
+        await deleteTeacher(user.sections, user._id)
+
+
+
+}
 
 userSchema.statics.login = async function(userId, password) {
     const user = await this.findOne({userId});
