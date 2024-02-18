@@ -80,6 +80,9 @@ const userSchema = new mongoose.Schema({
   },
     department:{
         type:String
+    },
+    aboutme:{
+        type:String
     }
 
 
