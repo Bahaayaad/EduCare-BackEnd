@@ -54,6 +54,30 @@ module.exports.deleteStudent = async (req, res) =>{
         console.log(err.message)
         res.status(400).json(err.message)
     }
+}
+
+module.exports.editStudent = async (req, res) => {
+    const curUser = await User.findById(req.user).select('userId')
+
+    const userId = String(req.params.id)
+    console.log("maybeeeeee "+curUser.userId)
+    console.log("meeeeoooo" + userId)
+    if(userId !== curUser.userId){
+        console.log("make sense")
+        return res.status(404).json('invalid userId')
+    }
+    const updateUserData = req.body;
+    try{
+        const updatedUser = await User.findOneAndUpdate({_id:req.user}, updateUserData, {new:true})
+        if(!updatedUser){
+            return res.status(404).json({error:'User not found'})
+        }
+        return res.status(200).json(updatedUser)
+
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({err:'Internal Server Error'})
+    }
 
 }
 

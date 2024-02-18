@@ -21,10 +21,10 @@ console.log("Initial " + req.user)
       console.log('This is student: ')
       console.log(student)
       
-      const { userId, email, password, role, gender, major, address, name } = student;
+      const { userId, email, password, role, gender, major, address, name, department } = student;
       try {
         console.log(++counter);
-          const user = await User.create({ userId, email, password, role, gender, major, address, name });
+          const user = await User.create({ userId, email, password, role, gender, major, address, name, department });
       }
       catch(err) {
         console.log("whatever: "+name)

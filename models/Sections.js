@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const sectionSchema = new mongoose.Schema({
-    username:{
+    sectionId:{
         type: String,
         required:[true, "section id is required"]
     },

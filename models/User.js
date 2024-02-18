@@ -30,55 +30,58 @@ const sendEmail = async (email, password) =>{
         })
 }
 const userSchema = new mongoose.Schema({
-  userId: {
+    userId: {
       type: String,
       required: [true, "is Empty"],
       unique: [true, "the userId is not unique"],
       lowercase: true
   },
-  name:{
+    name:{
       type:String,
       required:true,
       lowercase:true
   },
-  password: {
+    password: {
       type: String,
       minlength: [6, "the length is less than 6 characters"],
       default:null
   },
-  email:{
+    email:{
       type: String,
       required:false,
       lowercase:true,
       validate:[isEmail ,'please enter a valid email']
   },
-  role:{
+    role:{
       type:String,
       required: true,
       lowercase:true,
       enum:['admin', 'teacher', 'student']
   },
-  gender:{
+    gender:{
       type: String,
       lowercase:true,
       enum:['male', 'female']
   },
-
-  major:{
+    major:{
       type: String,
       lowercase:true
   },
-  address:{
+    address:{
       type: String,
       lowercase:true
   },
-  sections: {
+    sections: {
       type: [{
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Section'
       }],
       default: []
-  }
+  },
+    department:{
+        type:String
+    }
+
 
 })
 userSchema.post('save', function(doc, next){

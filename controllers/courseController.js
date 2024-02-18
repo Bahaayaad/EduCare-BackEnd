@@ -30,7 +30,7 @@ const updateSec = async (studentsIds, teacherId, courseId, section) =>{
 
 
 module.exports.createSection = async (req, res) => {
-    const {username,teacher, students, course} = req.body
+    const {sectionId,teacher, students, course} = req.body
     let studentIds
     let teacherId
     let courseId
@@ -68,7 +68,7 @@ module.exports.createSection = async (req, res) => {
         // get course id
         if(course) {
             try {
-                const cId = await Courses.findOne({username: course}).exec()
+                const cId = await Courses.findOne({courseId: course}).exec()
                 console.log("most7eeel " + cId)
                 courseId = cId._id
             }catch (err){
@@ -81,7 +81,7 @@ module.exports.createSection = async (req, res) => {
 
 
         // create a new section
-        const section = await Section.create({username, students:studentIds, teacher:teacherId, course:courseId})
+        const section = await Section.create({sectionId:sectionId, students:studentIds, teacher:teacherId, course:courseId})
         // Update user (student, teacher) documents, and update Course document
         await updateSec(studentIds, teacherId, courseId, section)
 
@@ -94,9 +94,9 @@ module.exports.createSection = async (req, res) => {
     }
 }
 module.exports.createCourses = async(req, res) =>{
-    const {username, description} = req.body
+    const {courseId, description} = req.body
     try{
-        const course = await Courses.create({username, description})
+        const course = await Courses.create({courseId, description})
         console.log(JSON.stringify(course));
         res.status(201).json(course)
     }catch (err){
