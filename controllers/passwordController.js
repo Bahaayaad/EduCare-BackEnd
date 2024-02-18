@@ -53,15 +53,20 @@ module.exports.resetPassword =async (req, res) =>{
     try {
         const user = await User.findOne({userId: req.user}).select('password')
         if(!user){
+            console.log(err.message)
             return res.status(401).json('Invalid User')
         }
         const compare = await comparePassword(oldPassword, user.password)
         if(!compare){
+            console.log(err.message)
             return res.status(400).json('Password is incorrect')
         }
         const password = await encryptPassword(newPassword)
         const updatedUser = await User.findOneAndUpdate({userId: req.user}, {password: password},{new:true})
+        console.log('we made it!!!')
+        res.status(200).json(updatedUser)
     }catch (err){
+        console.log(err.message)
         return res.status(400).json.message(err.message)
     }
 
