@@ -69,12 +69,12 @@ module.exports.editStudent = async (req, res) => {
     }
     const updateUserData = req.body
     try{
-        const updatedUser = await User.findOneAndUpdate({_id:userId}, updateUserData, {new:true})
+        const updatedUser = await User.findOneAndUpdate({_id:req.params.id}, updateUserData, {new:true})
         if(!updatedUser){
             return res.status(404).json({error:'User not found'})
         }
         return res.status(200).json(updatedUser)
-
+io
     }catch(err){
         console.log(err)
         return res.status(500).json({err:'Internal Server Error'})
