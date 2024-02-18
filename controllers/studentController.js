@@ -57,16 +57,17 @@ module.exports.deleteStudent = async (req, res) =>{
 }
 
 module.exports.editStudent = async (req, res) => {
-    const curUser = await User.findById(req.user).select('userId')
+    const curUser = await User.findById(req.user).select('userId role')
 
     const userId = String(req.params.id)
     console.log("maybeeeeee "+curUser.userId)
     console.log("meeeeoooo" + userId)
+    if(curUser.role!=='admin')
     if(userId !== curUser.userId){
         console.log("make sense")
         return res.status(404).json('invalid userId')
     }
-    const updateUserData = req.body;
+    const updateUserData = req.body
     try{
         const updatedUser = await User.findOneAndUpdate({_id:req.user}, updateUserData, {new:true})
         if(!updatedUser){
