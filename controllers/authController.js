@@ -61,30 +61,30 @@ module.exports.login= async (req, res) => {
       res.status(200).json(user.role)
   }
 
-  // const generatePassword = () =>{
-  //     return generator.generate({
-  //         length: 6,
-  //         numbers: true
-  //     })
-  // }
-  //
-  // module.exports.forgotPassword = async (req, res) =>{
-  //   const email = req.body.email
-  //     try{
-  //   const user = await User.findOne({email: email})
-  //     if(!user){
-  //         return res.status(404).json('Email is not assigned to any user')
-  //     }
-  //     const newPassword =generatePassword()
-  //     user = User.updateOne({email: email}, {password: newPassword})
-  //
-  //   }catch (err){
-  //         return res.status(404).json('Email is not assigned to any user')
-  //     }
-  // }
-  //
-  // module.exports.resetPassword =async (req, res) =>{
-  //
-  //
-  // }
+  const generatePassword = () =>{
+      return generator.generate({
+          length: 6,
+          numbers: true
+      })
+  }
+
+  module.exports.forgotPassword = async (req, res) =>{
+    const email = req.body.email
+      try{
+    const user = await User.findOne({email: email})
+      if(!user){
+          return res.status(404).json('Email is not assigned to any user')
+      }
+      const newPassword =generatePassword()
+      updatedUser = User.updateOne({email: email}, {password: newPassword})
+
+    }catch (err){
+          return res.status(404).json('Email is not assigned to any user')
+      }
+  }
+
+  module.exports.resetPassword =async (req, res) =>{
+
+
+  }
 
