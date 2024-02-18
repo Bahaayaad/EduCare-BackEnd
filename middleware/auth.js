@@ -23,4 +23,5 @@ const verifyTokenAuth = (req, res, next) => {
 
 };
 
+
 module.exports = {verifyTokenAuth};

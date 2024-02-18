@@ -60,3 +60,12 @@ module.exports.login= async (req, res) => {
       res.status(200).json(user.role)
   }
 
+  module.exports.forgotPassword = async (req, res) =>{
+
+  }
+
+  module.exports.resetPassword =async (req, res) =>{
+
+
+  }
+

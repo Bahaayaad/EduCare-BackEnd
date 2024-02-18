@@ -26,3 +26,12 @@ module.exports.profileEdit = async (req, res) =>{
         res.status(500).json(err.message)
     }
 }
+
+module.exports.myProfileView = async (req, res) => {
+    try{
+        const curUser = await User.findById(req.user)
+        res.status(200).json(curUser)
+    }catch (err){
+        res.status(500).json(err.message)
+    }
+}
