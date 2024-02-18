@@ -60,8 +60,6 @@ module.exports.editStudent = async (req, res) => {
     const curUser = await User.findById(req.user).select('userId role')
 
     const userId = String(req.params.id)
-    console.log("maybeeeeee "+curUser.userId)
-    console.log("meeeeoooo" + userId)
     if(curUser.role!=='admin')
     if(userId !== curUser.userId){
         console.log("make sense")

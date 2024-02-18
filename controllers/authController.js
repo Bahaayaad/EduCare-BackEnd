@@ -60,3 +60,15 @@ module.exports.login= async (req, res) => {
       res.status(200).json(user.role)
   }
 
+  module.exports.profileView = async (req, res) =>{
+    try {
+        const user = await User.findOne({userId: req.params.id})
+        res.status(200).json(user)
+    }catch (err){
+        console.log('some error happened: ' + err)
+        res.status(500).json(err.message)
+    }
+
+
+  }
+
