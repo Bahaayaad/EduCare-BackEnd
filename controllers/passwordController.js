@@ -36,11 +36,14 @@ module.exports.forgotPassword = async (req, res) =>{
             const encryptedPassword = await encryptPassword(newPassword);
             const updatedUser =await User.findOneAndUpdate({email: email}, {password: encryptedPassword}, {new: true}).exec()
             await User.sendEmail(email, newPassword)
+            console.log('Niceee')
             res.status(200).json(updatedUser)
         }catch(err){
+            console.log(err.message)
             return res.status(500).json(err.message)
         }
     }catch (err){
+        console.log(err.message)
         return res.status(404).json('Email is not assigned to any user')
     }
 }
