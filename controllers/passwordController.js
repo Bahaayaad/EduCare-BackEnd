@@ -19,6 +19,10 @@ const encryptPassword = async (password)=>{
     }
 }
 
+const comparePassword = async (oldPassword, dbPassword) =>{
+    return await bcrypt.compare(oldPassword, dbPassword)
+}
+
 module.exports.forgotPassword = async (req, res) =>{
     console.log("test")
     const email = req.body.email;
@@ -42,6 +46,20 @@ module.exports.forgotPassword = async (req, res) =>{
 }
 
 module.exports.resetPassword =async (req, res) =>{
-   // const oldPassword =
+    const {oldPassword, newPassword} = req.body
+    try {
+        const user = await User.findOne({userId: req.user}).select('password')
+        if(!user){
+            return res.status(401).json('Invalid User')
+        }
+        const compare = await comparePassword(oldPassword, user.password)
+        if(!compare){
+            return res.status(400).json('Password is incorrect')
+        }
+        const password = await encryptPassword(newPassword)
+        const updatedUser = await User.findOneAndUpdate({userId: req.user}, {password: password},{new:true})
+    }catch (err){
+        return res.status(400).json.message(err.message)
+    }
 
 }
