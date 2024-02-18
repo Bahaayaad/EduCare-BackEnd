@@ -28,7 +28,11 @@ const updateSec = async (studentsIds, teacherId, courseId, section) =>{
 
 
 module.exports.createSection = async (req, res) => {
-    const {sectionId,teacher, students, course} = req.body
+    const curUser = await User.findById(req.user).select('role')
+    if(curUser.role!=='admin'){
+        return res.status(401).json('Not authorized')
+    }
+    const {sectionId,teacher, students, course, room, time, days} = req.body
     let studentIds
     let teacherId
     let courseId
@@ -74,7 +78,7 @@ module.exports.createSection = async (req, res) => {
 
 
         // create a new section
-        const section = await Section.create({sectionId:sectionId, students:studentIds, teacher:teacherId, course:courseId})
+        const section = await Section.create({sectionId:sectionId, students:studentIds, teacher:teacherId, course:courseId, room:room, time:time, days:days})
         // Update user (student, teacher) documents, and update Course document
         await updateSec(studentIds, teacherId, courseId, section)
 
@@ -85,6 +89,10 @@ module.exports.createSection = async (req, res) => {
     }
 }
 module.exports.createCourses = async(req, res) =>{
+    const curUser = await User.findById(req.user).select('role')
+    if(curUser.role!=='admin'){
+        return res.status(401).json('Not authorized')
+    }
     const {courseId, description} = req.body
     try{
         const course = await Courses.create({courseId, description})
@@ -94,7 +102,15 @@ module.exports.createCourses = async(req, res) =>{
     }
 }
 module.exports.soonToDelete = async (req, res) =>{
-    const first = await Section.deleteMany({})
-    const second = await Courses.deleteMany({})
+    await Section.deleteMany({})
+    await Courses.deleteMany({})
     res.status(200).json("cool")
+}
+
+module.exports.listCourses = async (req, res) => {
+    // const curUser = await User.findById(req.user).select('role')
+    // if(curUser.role === 'admin'){
+    //
+    // }
+
 }

@@ -18,7 +18,21 @@ const sectionSchema = new mongoose.Schema({
     course:{
         type: mongoose.Schema.Types.ObjectId,
         required:[true, "course is required"],
-        ref:'Course'
+        ref:'Course',
+        default:[]
+    },
+    room:{
+        type:String,
+        required:true,
+        default:null
+    },
+    time:{
+        type:String,
+        default:null
+    },
+    days:{
+        type:String,
+        default:null
     }
 });
 

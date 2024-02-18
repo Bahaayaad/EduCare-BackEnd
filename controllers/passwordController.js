@@ -67,7 +67,7 @@ module.exports.resetPassword =async (req, res) =>{
         res.status(200).json(updatedUser)
     }catch (err){
         console.log(err.message)
-        return res.status(400).json.message(err.message)
+        return res.status(400).json(err.message)
     }
 
 }
