@@ -1,5 +1,6 @@
 const User = require("../models/User")
 const jwt = require ("jsonwebtoken")
+const generator = require('generate-password')
 
 const tokenDuration =  5 * 60 * 60 * 1000;
 const createToken = (id) => {
@@ -21,10 +22,10 @@ console.log("Initial " + req.user)
       console.log('This is student: ')
       console.log(student)
       
-      const { userId, email, password, role, gender, major, address, name, department } = student;
+      const { userId, email, password, role, gender, major, address, name, department, aboutme, dob, phonenumber } = student;
       try {
         console.log(++counter);
-          const user = await User.create({ userId, email, password, role, gender, major, address, name, department });
+          const user = await User.create({ userId, email, password, role, gender, major, address, name, department, aboutme, dob, pohnenumber });
       }
       catch(err) {
         console.log("whatever: "+name)
@@ -60,12 +61,30 @@ module.exports.login= async (req, res) => {
       res.status(200).json(user.role)
   }
 
-  module.exports.forgotPassword = async (req, res) =>{
-
-  }
-
-  module.exports.resetPassword =async (req, res) =>{
-
-
-  }
+  // const generatePassword = () =>{
+  //     return generator.generate({
+  //         length: 6,
+  //         numbers: true
+  //     })
+  // }
+  //
+  // module.exports.forgotPassword = async (req, res) =>{
+  //   const email = req.body.email
+  //     try{
+  //   const user = await User.findOne({email: email})
+  //     if(!user){
+  //         return res.status(404).json('Email is not assigned to any user')
+  //     }
+  //     const newPassword =generatePassword()
+  //     user = User.updateOne({email: email}, {password: newPassword})
+  //
+  //   }catch (err){
+  //         return res.status(404).json('Email is not assigned to any user')
+  //     }
+  // }
+  //
+  // module.exports.resetPassword =async (req, res) =>{
+  //
+  //
+  // }
 

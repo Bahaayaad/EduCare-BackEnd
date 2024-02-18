@@ -19,9 +19,8 @@ const verifyTokenAuth = (req, res, next) => {
           req.user = decodedToken.id;
              return next();
         }
-    });
-
-};
+    })
+}
 
 
 module.exports = {verifyTokenAuth};

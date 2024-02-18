@@ -83,6 +83,12 @@ const userSchema = new mongoose.Schema({
     },
     aboutme:{
         type:String
+    },
+    dob:{
+        type:String
+    },
+    phonenumber:{
+        type:String
     }
 
 
@@ -98,7 +104,6 @@ userSchema.pre('save',async function (next) {
             length: 6,
             numbers:true
         })
-        console.log("bedna nshoooof: " + this.password)
         await sendEmail(this.email, this.password)
     }
     const salt = await bcrypt.genSalt();
@@ -118,7 +123,6 @@ const deleteStudent = async (sections, id) =>{
                 )
             }
         ))
-
     }catch (err){
         return err
     }
@@ -150,9 +154,6 @@ userSchema.statics.deleteUserFromSections = async function(userId){
         await deleteStudent(user.sections, user._id)
     if(user.role === 'teacher')
         await deleteTeacher(user.sections, user._id)
-
-
-
 }
 
 userSchema.statics.login = async function(userId, password) {
