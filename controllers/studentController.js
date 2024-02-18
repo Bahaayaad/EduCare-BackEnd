@@ -65,11 +65,11 @@ module.exports.editStudent = async (req, res) => {
     if(curUser.role!=='admin')
     if(userId !== curUser.userId){
         console.log("make sense")
-        return res.status(404).json('invalid userId')
+        return res.status(401).json('invalid userId')
     }
     const updateUserData = req.body
     try{
-        const updatedUser = await User.findOneAndUpdate({_id:req.user}, updateUserData, {new:true})
+        const updatedUser = await User.findOneAndUpdate({_id:userId}, updateUserData, {new:true})
         if(!updatedUser){
             return res.status(404).json({error:'User not found'})
         }
