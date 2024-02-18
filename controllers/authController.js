@@ -25,7 +25,7 @@ console.log("Initial " + req.user)
       const { userId, email, password, role, gender, major, address, name, department, aboutme, dob, phonenumber } = student;
       try {
         console.log(++counter);
-          const user = await User.create({ userId, email, password, role, gender, major, address, name, department, aboutme, dob, pohnenumber });
+          const user = await User.create({ userId, email, password, role, gender, major, address, name, department, aboutme, dob, phonenumber });
       }
       catch(err) {
         console.log("whatever: "+name)
@@ -69,15 +69,20 @@ module.exports.login= async (req, res) => {
   }
 
   module.exports.forgotPassword = async (req, res) =>{
-    const email = req.body.email
-      try{
+
+    const email = req.body.email;
+    try{
     const user = await User.findOne({email: email})
       if(!user){
           return res.status(404).json('Email is not assigned to any user')
       }
-      const newPassword =generatePassword()
-      updatedUser = User.updateOne({email: email}, {password: newPassword})
-
+      const newPassword =generatePassword();
+      try {
+          const updatedUser =await User.updateOne({email: email}, {password: newPassword}, {new: true});
+          res.status(200).json(updatedUser.email)
+      }catch(err){
+          return res.status(500).json(err)
+      }
     }catch (err){
           return res.status(404).json('Email is not assigned to any user')
       }
