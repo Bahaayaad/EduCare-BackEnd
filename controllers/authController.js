@@ -79,7 +79,7 @@ module.exports.login= async (req, res) => {
       const newPassword =generatePassword();
       try {
           const updatedUser =await User.updateOne({email: email}, {password: newPassword}, {new: true});
-          res.status(200).json(updatedUser.email)
+          res.status(200).json(updatedUser.email, updatedUser.userId)
       }catch(err){
           return res.status(500).json(err)
       }

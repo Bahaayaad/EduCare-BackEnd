@@ -79,10 +79,12 @@ const userSchema = new mongoose.Schema({
       default: []
   },
     department:{
-        type:String
+        type:String,
+        default:''
     },
     aboutme:{
-        type:String
+        type:String,
+        default:''
     },
     dob:{
         type:String
