@@ -5,5 +5,5 @@ const {profileView} = require("../controllers/profileController");
 const router = Router();
 router.get('/profile/:id', verifyTokenAuth, profileController.profileView)
 router.put('/profile/:id', verifyTokenAuth, profileController.profileEdit)
-router.get('myprofile/:id', verifyTokenAuth, profileController.myProfileView)
+router.get('/myprofile', verifyTokenAuth, profileController.myProfileView)
 module.exports = router;

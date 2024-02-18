@@ -6,7 +6,6 @@ const updateSec = async (studentsIds, teacherId, courseId, section) =>{
     if(studentsIds.length)
     await Promise.all(
         studentsIds.map(async (studentId) => {
-            console.log("almost there " + studentId)
             const user = await User.findByIdAndUpdate(
                 studentId,
                 { $push: { sections: section._id } },
@@ -16,7 +15,6 @@ const updateSec = async (studentsIds, teacherId, courseId, section) =>{
     )
 
     // Update teacher documents with the new section reference
-    console.log("ya saterr " + courseId)
     await User.findByIdAndUpdate(
         teacherId,
         { $push: { sections: section._id } },
@@ -43,16 +41,13 @@ module.exports.createSection = async (req, res) => {
         for (const student of students) {
             try {
                 const studentId = await User.findOne({userId: student, role: "student"}).exec()
-                console.log("??? " + studentId)
                 studentIds.push(studentId._id)
             }catch (err){
                 return res.status(400).json("The student " + student + ' does not exist')
             }
         }
-        console.log("test test "+studentIds)
 
         // get teacher id
-        console.log("ma 7beet " + teacher)
         if(teacher) {
             try {
                 const tId = await User.findOne({userId: teacher, role: 'teacher'}).exec()
@@ -69,10 +64,8 @@ module.exports.createSection = async (req, res) => {
         if(course) {
             try {
                 const cId = await Courses.findOne({courseId: course}).exec()
-                console.log("most7eeel " + cId)
                 courseId = cId._id
             }catch (err){
-                console.log("lets see " +err.message)
                 return res.status(400).json("Error occurred while fetching the course")
             }
         }else {
@@ -85,11 +78,9 @@ module.exports.createSection = async (req, res) => {
         // Update user (student, teacher) documents, and update Course document
         await updateSec(studentIds, teacherId, courseId, section)
 
-        console.log(JSON.stringify(section));
         res.status(201).json({section})
 
     } catch (err) {
-        console.log(err)
         res.status(404).json({message: err.message})
     }
 }
@@ -97,10 +88,8 @@ module.exports.createCourses = async(req, res) =>{
     const {courseId, description} = req.body
     try{
         const course = await Courses.create({courseId, description})
-        console.log(JSON.stringify(course));
         res.status(201).json(course)
     }catch (err){
-        console.log(err)
         res.status(400).json({message: "error when creating the course"})
     }
 }

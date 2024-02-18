@@ -7,28 +7,7 @@ const hbs = require('nodemailer-express-handlebars')
 const Section = require("../models/Sections")
 
 // Create a server to send a generated password to  a student
-const sendEmail = async (email, password) =>{
-    if(email == null)
-      return 
-    var transporter = nodemailer.createTransport(
-        {
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
-            service:'gmail',
-            auth:{
-                user:'bahaayaadvon@gmail.com',
-                pass:'ykuw vbbz txnf iwkl'
-            }
-        }
-    )
-    await transporter.sendMail({
-        from: 'educarejo@gmail.com',
-        to: email,
-        subject: "Your generated password",
-        text: `Your generated password is ${password}:`, // plain text body
-        })
-}
+
 const userSchema = new mongoose.Schema({
     userId: {
       type: String,
@@ -95,6 +74,30 @@ const userSchema = new mongoose.Schema({
 
 
 })
+
+userSchema.statics.sendEmail = async (email, password) =>{
+    if(email == null)
+        return
+    var transporter = nodemailer.createTransport(
+        {
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            service:'gmail',
+            auth:{
+                user:'bahaayaadvon@gmail.com',
+                pass:'ykuw vbbz txnf iwkl'
+            }
+        }
+    )
+    await transporter.sendMail({
+        from: 'educarejo@gmail.com',
+        to: email,
+        subject: "Your generated password",
+        text: `Your generated password is ${password}:`, // plain text body
+    })
+}
+
 userSchema.post('save', function(doc, next){
     this.password
     next();
@@ -109,14 +112,13 @@ userSchema.pre('save',async function (next) {
         await sendEmail(this.email, this.password)
     }
     const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
+    this.password = await bcrypt.hash(this.password, salt)
     next();
   })
 const deleteStudent = async (sections, id) =>{
     try{
         await Promise.all(sections.map(
             async (sectionId) =>{
-                console.log("wow lets see this: " + sectionId)
                 const les = await Section.updateOne(
                     {_id:sectionId},
                     {$pull: {
@@ -150,7 +152,6 @@ const deleteTeacher = async (sections, id) =>{
 userSchema.statics.deleteUserFromSections = async function(userId){
     if(!userId) return
     const user = await this.findOne({userId})
-    console.log("fewafaewffwefwesf " + userId)
     if(!user.sections) return
     if(user.role === 'student')
         await deleteStudent(user.sections, user._id)

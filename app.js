@@ -5,6 +5,7 @@ const studentRoutes = require('./routes/studentRoutes')
 const courseRoutes = require('./routes/courseRoutes')
 const teacherRouter = require('./routes/teacherRoutes')
 const profileRouter = require('./routes/profileRoutes')
+const passwordRouter = require('./routes/passwordRoutes')
 const cookieParser = require('cookie-parser')
 const { verifyTokenAuth } = require('./middleware/auth')
 const User = require('./models/User')
@@ -30,7 +31,6 @@ mongoose.connect(dbURI)
   // test authentication!
   app.get('/test', verifyTokenAuth, async (req, res) => {
     const user  = await User.findById(req.user,{},{})
-    console.log("Let's see the flow: " + JSON.stringify(req.user));
     if(user.role !== 'student'){
       return res.status(403).json({ error: 'Forbidden'})
     }
@@ -42,4 +42,5 @@ app.use(studentRoutes)
 app.use(courseRoutes)
 app.use(teacherRouter)
 app.use(profileRouter)
+app.use(passwordRouter)
 module.exports = app
