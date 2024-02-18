@@ -11,7 +11,7 @@ module.exports.listStudents = async (req, res) => {
         }
 
     }
-    else if(user.role === 'teacher') {
+    else if(user.role === 'teacher' || user.role === 'student') {
         const sections = [user.sections]
         let flag = 0
         await Promise.all(
@@ -19,6 +19,7 @@ module.exports.listStudents = async (req, res) => {
                 try {
                     const section = await Section.findById(sectionId)
                     const studentsSection = section.students
+                    console.log("we333 " + section)
                     for (const studentsId of studentsSection) {
                         name = (await User.findById(studentsId, {}, {}).exec())
                         students.push(name)

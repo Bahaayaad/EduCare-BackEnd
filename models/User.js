@@ -8,7 +8,7 @@ const Section = require("../models/Sections")
 
 // Create a server to send a generated password to  a student
 const sendEmail = async (email, password) =>{
-    if(email == null || email == undefined)
+    if(email == null)
       return 
     var transporter = nodemailer.createTransport(
         {

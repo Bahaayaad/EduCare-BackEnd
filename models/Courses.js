@@ -8,6 +8,7 @@ const courseSchema = new mongoose.Schema({
     },
     description:{
         type: String,
+        lowercase:true,
         required: true
     },
     sections:{

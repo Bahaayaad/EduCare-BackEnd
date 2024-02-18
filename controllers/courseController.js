@@ -54,23 +54,34 @@ module.exports.createSection = async (req, res) => {
         // get teacher id
         console.log("ma 7beet " + teacher)
         if(teacher) {
-            const tId = await User.findOne({userId: teacher, role: 'teacher'}).exec()
-            teacherId = tId._id
+            try {
+                const tId = await User.findOne({userId: teacher, role: 'teacher'}).exec()
+                teacherId = tId._id
+            }catch (err){
+                return res.status(400).json("Error occurred while fetching the teacher")
+            }
+
         }else {
             return res.status(400).json('Teacher was not found')
         }
 
         // get course id
         if(course) {
-            const cId = await Courses.findOne({username: course}).exec()
-            courseId = cId._id
+            try {
+                const cId = await Courses.findOne({username: course}).exec()
+                console.log("most7eeel " + cId)
+                courseId = cId._id
+            }catch (err){
+                console.log("lets see " +err.message)
+                return res.status(400).json("Error occurred while fetching the course")
+            }
         }else {
             return res.status(400).json('Course was not found')
         }
 
+
         // create a new section
         const section = await Section.create({username, students:studentIds, teacher:teacherId, course:courseId})
-
         // Update user (student, teacher) documents, and update Course document
         await updateSec(studentIds, teacherId, courseId, section)
 
