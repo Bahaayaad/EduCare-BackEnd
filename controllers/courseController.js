@@ -163,7 +163,7 @@ module.exports.listSections = async (req, res) =>{
             sections.add(s)
         }
 
-        if (sections.length) {
+        if (sections.size) {
             return res.status(200).json(sections)
         } else {
             return res.status(404).json("No courses where found")
