@@ -109,7 +109,7 @@ module.exports.soonToDelete = async (req, res) =>{
 
 module.exports.listCourses = async (req, res) => {
     const curUser = await User.findById(req.user).select('role')
-    let courses = []
+    let courses = new Set()
     if(curUser.role === 'admin'){
         try {
             courses = await User.find({role: 'student'})
@@ -121,12 +121,12 @@ module.exports.listCourses = async (req, res) => {
 
     else if(curUser.role === 'teacher' || curUser.role === 'student') {
         const sections = [curUser.sections]
-        let flag = 0
         await Promise.all(
             sections.map(async (sectionId) => {
                 try {
                     const section = await Section.findById(sectionId)
-                    courses.push(section.course)
+                    const course = await Courses.findById(section.course)
+                    courses.push(course)
                 }catch (err) {
                     console.log(err.message)
                     return res.status(404).json(err.message)
