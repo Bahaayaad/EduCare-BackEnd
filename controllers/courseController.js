@@ -151,7 +151,7 @@ module.exports.listCourses = async (req, res) => {
 
 module.exports.listSections = async (req, res) =>{
     const courseId = req.params.id
-    let sections = new Set()
+    let sections = []
     try {
         const course = await Courses.findOne({courseId: courseId})
         if(!course){
@@ -159,7 +159,7 @@ module.exports.listSections = async (req, res) =>{
         }
         if(course.sections.length)
         for (section in course.sections){
-            const s = await Section.findById(section)
+            const s = await Section.findById(section._id)
             sections.add(s)
         }
 
