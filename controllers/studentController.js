@@ -13,7 +13,7 @@ module.exports.listStudents = async (req, res) => {
     }
     else if(user.role === 'teacher' || user.role === 'student') {
 
-        if(user.sections.length)
+        if(!user.sections.length)
             return res.status(404).json('Dont worry no students were found :) ')
         const sections = [user.sections]
         await Promise.all(
