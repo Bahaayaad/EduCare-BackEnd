@@ -158,7 +158,7 @@ module.exports.listSections = async (req, res) =>{
             return res.status(404).json({message: 'course not found'})
         }
         if(course.sections.length)
-        for (section in course.sections){
+        for (section of course.sections){
             const s = await Section.findById(section._id)
             sections.push(s)
         }
