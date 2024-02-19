@@ -101,7 +101,7 @@ module.exports.createCourses = async(req, res) =>{
         const course = await Courses.create({courseId, description, name, sections, department, hours })
         res.status(201).json(course)
     }catch (err){
-        res.status(400).json({message: "error when creating the course"})
+        res.status(400).json({message: err.message})
     }
 }
 module.exports.soonToDelete = async (req, res) =>{
