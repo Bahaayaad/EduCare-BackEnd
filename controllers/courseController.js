@@ -71,7 +71,7 @@ module.exports.createSection = async (req, res) => {
             try {
                 const cId = await Courses.findOne({courseId: course}).exec()
                 courseId = cId._id
-                sectionId = `${courseId}-${cId.sections.length+1}`
+                sectionId = `${cId.courseId}-${cId.sections.length+1}`
             }catch (err){
                 return res.status(400).json("Error occurred while fetching the course")
             }
