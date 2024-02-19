@@ -6,7 +6,7 @@ const updateSec = async (studentsIds, teacherId, courseId, section) =>{
     if(studentsIds.length)
     await Promise.all(
         studentsIds.map(async (studentId) => {
-            const user = await User.findByIdAndUpdate(
+            await User.findByIdAndUpdate(
                 studentId,
                 { $push: { sections: section._id } },
                 { new: true }
@@ -126,7 +126,7 @@ module.exports.listCourses = async (req, res) => {
                 try {
                     const section = await Section.findById(sectionId)
                     const course = await Courses.findById(section.course)
-                    courses.push(course)
+                    courses.add(course)
                 }catch (err) {
                     console.log(err.message)
                     return res.status(404).json(err.message)
@@ -144,4 +144,30 @@ module.exports.listCourses = async (req, res) => {
     } else {
         return res.status(404).json("No courses where found")
     }
+}
+
+module.exports.listSections = async (req, res) =>{
+    const courseId = req.params.id
+    let sections = new Set()
+    try {
+        const course = await Courses.findOne({courseId: courseId})
+        if(!course){
+            return res.status(404).json({message: 'course not found'})
+        }
+        if(course.sections.length)
+        for (section in course.sections){
+            const s = await Section.findById(section)
+            sections.add(s)
+        }
+
+        if (sections.length) {
+            return res.status(200).json(sections)
+        } else {
+            return res.status(404).json("No courses where found")
+        }
+
+    }catch (err){
+        return res.status(400).json(err.message)
+    }
+
 }
