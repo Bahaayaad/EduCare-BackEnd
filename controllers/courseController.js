@@ -161,7 +161,7 @@ module.exports.listSections = async (req, res) =>{
         if(course.sections.length)
         for (section of course.sections){
             const s = await Section.findById(section._id)
-            const t = await User.findById(s.teacher).select('name')
+            const t = await User.findById(s.teacher).select('name userId')
             teachers.push(t)
             sections.push({section:s,teacher:t})
         }
