@@ -93,9 +93,9 @@ module.exports.createCourses = async(req, res) =>{
     if(curUser.role!=='admin'){
         return res.status(401).json('Not authorized')
     }
-    const {courseId, description} = req.body
+    const {courseId, description, name, sections, department, hours} = req.body
     try{
-        const course = await Courses.create({courseId, description})
+        const course = await Courses.create({courseId, description, name, sections, department, hours })
         res.status(201).json(course)
     }catch (err){
         res.status(400).json({message: "error when creating the course"})
@@ -108,9 +108,40 @@ module.exports.soonToDelete = async (req, res) =>{
 }
 
 module.exports.listCourses = async (req, res) => {
-    // const curUser = await User.findById(req.user).select('role')
-    // if(curUser.role === 'admin'){
-    //
-    // }
+    const curUser = await User.findById(req.user).select('role')
+    let courses = []
+    if(curUser.role === 'admin'){
+        try {
+            courses = await User.find({role: 'student'})
+        }catch (err){
+            console.log("Course Admin fetching error")
+            return res.status(400).json(err.message)
+        }
+    }
 
+    else if(curUser.role === 'teacher' || curUser.role === 'student') {
+        const sections = [curUser.sections]
+        let flag = 0
+        await Promise.all(
+            sections.map(async (sectionId) => {
+                try {
+                    const section = await Section.findById(sectionId)
+                    courses.push(section.course)
+                }catch (err) {
+                    console.log(err.message)
+                    return res.status(404).json(err.message)
+                }
+
+            })
+        )
+    }
+    else{
+        return res.status(401).json({ message: 'Unauthorized' })
+    }
+
+    if (courses.length) {
+        return res.status(200).json(courses)
+    } else {
+        return res.status(404).json("No courses where found")
+    }
 }

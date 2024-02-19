@@ -24,7 +24,7 @@ module.exports.listStudents = async (req, res) => {
                         students.push(name)
                     }
                 }catch (err){
-                    flag =1
+                    return res.status(400).json({message:err.message})
                 }
 
             })
@@ -69,7 +69,7 @@ module.exports.editStudent = async (req, res) => {
         }
         return res.status(200).json(updatedUser)
     }catch(err){
-        return res.status(500).json({err:'Internal Server Error'})
+        return res.status(500).json({err:'Internal Server Error', message:err.message})
     }
 
 }

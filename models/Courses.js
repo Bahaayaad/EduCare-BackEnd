@@ -6,6 +6,11 @@ const courseSchema = new mongoose.Schema({
         unique:[true, 'The course already has been created']
 
     },
+    name:{
+        type:String,
+        lowercase:true,
+        default:null
+    },
     description:{
         type: String,
         lowercase:true,
@@ -17,11 +22,20 @@ const courseSchema = new mongoose.Schema({
             ref:'Section'
         }],
         default:[]
+    },
+    department:{
+        type: String,
+        lowercase:true,
+       default:null
+    },
+    hours:{
+        type:String,
+        lowercase:true,
+        default:null
     }
 });
 
 courseSchema.post('save', function(doc, next){
-
     next()
 })
 const Courses = mongoose.model('courses', courseSchema);
