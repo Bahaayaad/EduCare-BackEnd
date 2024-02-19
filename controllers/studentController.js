@@ -74,7 +74,53 @@ module.exports.editStudent = async (req, res) => {
     }catch(err){
         return res.status(500).json({err:'Internal Server Error', message:err.message})
     }
+}
 
+const updateSectionForStudents = async (studentsIds, section) => {
+    if (studentsIds.length)
+        await Promise.all(
+            studentsIds.map(async (studentId) => {
+                await User.findByIdAndUpdate(
+                    studentId,
+                    {$push: {sections: section._id}},
+                    {new: true}
+                );
+            })
+        )
+    console.log('this should be done')
+}
+module.exports.addStudentToSection = async(req, res) =>{
+    const curUser = await User.findById(req.user).select('role')
+    const sectionId= req.params.id
+    if(curUser.role!=='admin')
+        return res.status('401').json('unauthorized user')
+    let students = []
+    for (let index in req.body) {
+        const {userId} = req.body[index];
+        try {
+            const student = await User.find({userId:userId})
+            if(!student) {
+                console.log('hard0')
+                return res.status(404).json(`student ${userId} not found`)
+            }
+            students.push(student._id)
+        }
+        catch(err) {
+            console.log('hard1')
+            return res.status(400).json(err.message);
+        }
+    }
+    try {
+        const section = await Section.findOneAndUpdate({sectionId: sectionId}, {
+            $push: {students: students}
+        }, {new: true})
+        updateSectionForStudents(students, section._id)
+        console.log('Ez')
+        res.status(200).json(section)
+    }catch (err){
+        console.log('hard2')
+        res.status(400).json({message: err.message})
+    }
 }
 
 

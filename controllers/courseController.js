@@ -115,7 +115,7 @@ module.exports.listCourses = async (req, res) => {
     let courses = new Set()
     if(curUser.role === 'admin'){
         try {
-            courses = await User.find({role: 'student'})
+            courses = await Courses.find({})
         }catch (err){
             console.log("Course Admin fetching error")
             return res.status(400).json(err.message)
