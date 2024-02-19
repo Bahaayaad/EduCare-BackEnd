@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Section = require("../models/Sections")
 const Courses = require("../models/Courses")
+const {etag} = require("express/lib/utils");
 
 const updateSec = async (studentsIds, teacherId, courseId, section) =>{
     if(studentsIds.length)
@@ -32,10 +33,11 @@ module.exports.createSection = async (req, res) => {
     if(curUser.role!=='admin'){
         return res.status(401).json('Not authorized')
     }
-    const {sectionId,teacher, students, course, room, time, days} = req.body
+    const {teacher, students, course, room, time, days} = req.body
     let studentIds
     let teacherId
     let courseId
+    let sectionId
     try {
         studentIds = []
         teacherId = null
@@ -69,6 +71,7 @@ module.exports.createSection = async (req, res) => {
             try {
                 const cId = await Courses.findOne({courseId: course}).exec()
                 courseId = cId._id
+                sectionId = `${courseId}-${cId.sections.length+1}`
             }catch (err){
                 return res.status(400).json("Error occurred while fetching the course")
             }
