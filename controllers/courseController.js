@@ -151,7 +151,7 @@ module.exports.listCourses = async (req, res) => {
 
 module.exports.listSections = async (req, res) =>{
     const courseId = req.params.id
-    let sections = new Set()
+    let sections = []
     try {
         const course = await Courses.findOne({courseId: courseId})
         if(!course){
@@ -160,10 +160,10 @@ module.exports.listSections = async (req, res) =>{
         if(course.sections.length)
         for (section of course.sections){
             const s = await Section.findById(section._id)
-            sections.add(s)
+            sections.push(s)
         }
 
-        if (sections.size) {
+        if (sections.length) {
             return res.status(200).json(sections)
         } else {
             return res.status(404).json("No courses where found")
