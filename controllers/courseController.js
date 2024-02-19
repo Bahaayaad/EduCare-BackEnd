@@ -160,7 +160,7 @@ module.exports.listSections = async (req, res) =>{
         if(course.sections.length)
         for (section in course.sections){
             const s = await Section.findById(section._id)
-            sections.add(s)
+            sections.push(s)
         }
 
         if (sections.length) {
