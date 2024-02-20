@@ -116,6 +116,9 @@ module.exports.listCourses = async (req, res) => {
     if(curUser.role === 'admin'){
         try {
             courses = await Courses.find({})
+            if(!courses){
+                return res.status(400).json('not found')
+            }
         }catch (err){
             console.log("Course Admin fetching error")
             return res.status(400).json(err.message)
@@ -178,15 +181,127 @@ module.exports.listSections = async (req, res) =>{
 
 }
 
-// TO-DO
 module.exports.editCourses = async (req, res) => {
+    const curUser = await User.findById(req.user).select('userId role')
 
+    const courseId = String(req.params.id)
+    if(curUser.role!=='admin')
+        if(courseId !== curUser.userId){
+            return res.status(401).json('invalid userId')
+        }
+    const updateCourseData = req.body
+    try{
+        const updateCourse = await Courses.findOneAndUpdate({userId:req.params.id}, updateCourseData, {new:true})
+        if(!updateCourse){
+            return res.status(404).json({error:'User not found'})
+        }
+        return res.status(200).json(updateCourse)
+    }catch(err){
+        return res.status(500).json({err:'Internal Server Error', message:err.message})
+    }
 
 
 }
-// TO-DO
 module.exports.editSection = async (req, res) =>{
+    const curUser = await User.findById(req.user).select('userId role')
 
+    const sectionId = String(req.params.id)
+    if(curUser.role!=='admin')
+        if(sectionId !== curUser.userId){
+            return res.status(401).json('invalid userId')
+        }
+    const updateSectionData = req.body
+    try{
+        const updateSection = await Section.findOneAndUpdate({userId:req.params.id}, updateSectionData, {new:true})
+        if(!updateSection){
+            return res.status(404).json({error:'User not found'})
+        }
+        return res.status(200).json(updateSection)
+    }catch(err){
+        return res.status(500).json({err:'Internal Server Error', message:err.message})
+    }
+}
 
+module.exports.deleteCourse = async (req, res) =>{
+    const curUser = await User.findById(req.user).select('userId role')
 
+    const courseId = String(req.params.id)
+    if(curUser.role!=='admin')
+        if(courseId !== curUser.userId){
+            return res.status(401).json('invalid userId')
+        }
+    try {
+        const course = await Courses.findOne({courseId: courseId})
+        if(!course){
+            return res.status(400).json('Section not found')
+        }
+        //delete course from sections
+        const courseSections = course.sections
+        if(courseSections){
+            if(courseSections.length > 0){
+                await Promise.all(
+                    courseSections.map(async (sectionId) => {
+                        await Section.findByIdAndDelete(sectionId);
+                    })
+                )
+            }
+        }
+        // delete section
+        const courseDelete = await Courses.deleteOne({courseId: courseId})
+        return res.status(200).json(courseDelete)
+    }catch (err){
+           return res.status(500).json('an error occurred: ' + err.message)
+    }
+}
+
+module.exports.deleteSection = async (req, res) =>{
+    const curUser = await User.findById(req.user).select('userId role')
+
+    const sectionId = String(req.params.id)
+    if(curUser.role!=='admin')
+        if(courseId !== curUser.userId){
+            return res.status(401).json('invalid userId')
+        }
+    try {
+        const section = await Section.findOne({sectionId: sectionId})
+        if(!section){
+            return res.status(400).json('Section not found')
+        }
+        //delete section from students
+        const sectionStd = section.students
+        if(sectionStd){
+            if(sectionStd.length > 0){
+                await Promise.all(
+                    sectionStd.map(async (studentId) => {
+                        await User.findByIdAndUpdate(
+                            studentId,
+                            { $pull: { sections: section._id } },
+                            { new: true }
+                        );
+                    })
+                )
+            }
+        }
+
+        //delete section from teacher
+        const sectionTch = section.teacher
+        if(sectionTch)
+            await User.findByIdAndUpdate(
+                sectionTch,
+                { $pull: { sections: section._id } },
+                { new: true })
+
+        // delete section from course
+        const courseId = section.course
+        await Courses.findByIdAndUpdate(
+            courseId,
+            {$pull:{sections:section._id}},
+            {new: true})
+
+        // delete section
+        const sectionDelete = await Section.deleteOne({sectionId: sectionId})
+        return res.status(200).json(sectionDelete)
+    }catch (err){
+        return res.status(500).json('an error occurred: ' + err.message)
+    }
 }

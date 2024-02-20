@@ -74,7 +74,7 @@ const userSchema = new mongoose.Schema({
 
 })
 
-userSchema.statics.sendEmail = async (email, password) =>{
+const sendEmail = async (email, password) =>{
     if(email == null)
         return
     var transporter = nodemailer.createTransport(

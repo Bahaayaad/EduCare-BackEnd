@@ -22,7 +22,7 @@ module.exports.listStudents = async (req, res) => {
                     const section = await Section.findById(sectionId)
                     const studentsSection = section.students
                     for (const studentsId of studentsSection) {
-                        if(studentsId === req.user) continue
+                        if(studentsId == req.user) continue
                         name = (await User.findById(studentsId, {}, {}).exec())
                         students.push(name)
                     }
@@ -100,18 +100,21 @@ module.exports.addStudentToSection = async(req, res) =>{
         try {
             const student = await User.findOne({userId:userId, role:'student'})
             if(!student) {
+                console.log('hard0')
                 return res.status(404).json(`student ${userId} not found`)
             }
-
             console.log("whatever: " + student.userId)
             students.push(student._id)
         }
         catch(err) {
+            console.log('hard1')
             return res.status(400).json(err.message);
         }
     }
     try {
-        const sectionOld = await Section.findOne({sectionId: sectionId})
+        const sectionOld = await Section.findOneAndUpdate({sectionId: sectionId}, {
+            $addToSet: {students: students}
+        }, {new: true})
 
         const oldS = sectionOld.students.length
 
@@ -128,6 +131,7 @@ module.exports.addStudentToSection = async(req, res) =>{
         }
         res.status(200).json(section)
     }catch (err){
+        console.log('hard2')
         res.status(400).json({message: err.message})
     }
 }

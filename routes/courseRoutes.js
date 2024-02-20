@@ -9,5 +9,6 @@ router.get('/courses', verifyTokenAuth, courseController.listCourses)
 router.get('/section/:id', courseController.listSections)
 router.post('/courses/:id', courseController.editCourses)
 router.post('sections/:id', courseController.editSection)
+router.delete('sections/:id', courseController.deleteSection)
 router.get('/deleteSectionAndCourse', courseController.soonToDelete)
 module.exports = router
