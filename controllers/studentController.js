@@ -82,7 +82,7 @@ const updateSectionForStudents = async (studentsIds, section) => {
             studentsIds.map(async (studentId) => {
                 await User.findByIdAndUpdate(
                     studentId,
-                    {$push: {sections: section._id}},
+                    {$addToSet: {sections: section._id}},
                     {new: true}
                 );
             })
@@ -98,11 +98,12 @@ module.exports.addStudentToSection = async(req, res) =>{
     for (let index in req.body) {
         const {userId} = req.body[index];
         try {
-            const student = await User.find({userId:userId})
+            const student = await User.findOne({userId:userId})
             if(!student) {
                 console.log('hard0')
                 return res.status(404).json(`student ${userId} not found`)
             }
+            console.log("whatever: " + student.userId)
             students.push(student._id)
         }
         catch(err) {
@@ -111,11 +112,23 @@ module.exports.addStudentToSection = async(req, res) =>{
         }
     }
     try {
-        const section = await Section.findOneAndUpdate({sectionId: sectionId}, {
-            $push: {students: students}
+        const sectionOld = await Section.findOneAndUpdate({sectionId: sectionId}, {
+            $addToSet: {students: students}
         }, {new: true})
-        updateSectionForStudents(students, section._id)
-        console.log('Ez')
+
+        const oldS = sectionOld.students.length
+
+
+        const sectionNew = await Section.findOneAndUpdate({sectionId: sectionId}, {
+            $addToSet: {students: students}
+        }, {new: true})
+
+        const newS  = sectionNew.students.length
+
+        await updateSectionForStudents(students, section._id)
+        if(oldS === newS){
+            return res.status(200).json('Some students were already added, we have handled it')
+        }
         res.status(200).json(section)
     }catch (err){
         console.log('hard2')

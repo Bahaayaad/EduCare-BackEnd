@@ -11,7 +11,7 @@ const sectionSchema = new mongoose.Schema({
     students: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
         }],
         default: []
     },
