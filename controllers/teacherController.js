@@ -5,7 +5,7 @@ module.exports.listTeachers = async (req, res) => {
     let teachers = []
     if(user.role ==='admin' || user.role === 'teacher') {
         try {
-            teachers = await User.find({role: 'teacher'})
+            teachers = await User.find({role: 'teacher', _id:{ $ne: req.user }})
         }catch (err){
             return res.status(400).json("Some error occurred while fetching the students")
         }
@@ -23,6 +23,8 @@ module.exports.listTeachers = async (req, res) => {
                     const teachersSection = section.teachers
                     for (const teachersId of teachersSection) {
                         if(teachersId === req.user) continue
+                        console.log("mewo " + teachersId)
+                        console.log("meow22 " + req.user)
                         name = (await User.findById(teachersId, {}, {}).exec())
                         teachers.push(name)
                     }

@@ -93,7 +93,7 @@ const sendEmail = async (email, password) =>{
         from: 'educarejo@gmail.com',
         to: email,
         subject: "Your generated password",
-        text: `Your generated password is ${password}:`, // plain text body
+        text: `Your generated password is: ${password}`, // plain text body
     })
 }
 
