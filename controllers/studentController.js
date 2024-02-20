@@ -98,7 +98,7 @@ module.exports.addStudentToSection = async(req, res) =>{
     for (let index in req.body) {
         const {userId} = req.body[index];
         try {
-            const student = await User.findOne({userId:userId})
+            const student = await User.findOne({userId:userId, role:'student'})
             if(!student) {
                 console.log('hard0')
                 return res.status(404).json(`student ${userId} not found`)
