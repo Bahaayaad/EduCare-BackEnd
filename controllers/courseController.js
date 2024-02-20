@@ -177,3 +177,16 @@ module.exports.listSections = async (req, res) =>{
     }
 
 }
+
+// TO-DO
+module.exports.editCourses = async (req, res) => {
+
+
+
+}
+// TO-DO
+module.exports.editSection = async (req, res) =>{
+
+
+
+}

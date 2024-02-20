@@ -24,7 +24,6 @@ const comparePassword = async (oldPassword, dbPassword) =>{
 }
 
 module.exports.forgotPassword = async (req, res) =>{
-    console.log("test")
     const email = req.body.email;
     try{
         const user = await User.findOne({email: email})

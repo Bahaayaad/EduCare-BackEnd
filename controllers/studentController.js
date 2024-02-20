@@ -132,4 +132,10 @@ module.exports.addStudentToSection = async(req, res) =>{
     }
 }
 
+// TO-DO
+module.exports.deleteStudentFromSection = async (req, res)=>{
+
+
+}
+
 

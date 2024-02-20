@@ -5,5 +5,6 @@ const router = Router()
 router.get('/students', verifyTokenAuth, studentController.listStudents)
 router.put('/students/:id', verifyTokenAuth, studentController.editStudent)
 router.delete('/students/:id', verifyTokenAuth, studentController.deleteStudent)
-router.post('/sectionAddStudent/:id', verifyTokenAuth, studentController.addStudentToSection)
+router.post('/sectionStudent/:id', verifyTokenAuth, studentController.addStudentToSection)
+router.delete('/sectionStudent/:id', verifyTokenAuth, studentController.deleteStudentFromSection)
 module.exports = router

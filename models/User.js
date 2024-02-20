@@ -6,7 +6,6 @@ const nodemailer = require('nodemailer')
 const hbs = require('nodemailer-express-handlebars')
 const Section = require("../models/Sections")
 
-// Create a server to send a generated password to  a student
 
 const userSchema = new mongoose.Schema({
     userId: {
