@@ -12,28 +12,36 @@ module.exports.listTeachers = async (req, res) => {
 
     }
     else if( user.role === 'student') {
+        let flag = 0
 
         if(!user.sections.length)
             return res.status(404).json('Dont worry no students were found :) ')
+        if(!user.sections)
+            return res.status(404).json('No sections were found')
         const sections = [user.sections]
         await Promise.all(
             sections.map(async (sectionId) => {
                 try {
                     const section = await Section.findById(sectionId)
-                    const teachersSection = section.teachers
-                    for (const teachersId of teachersSection) {
-                        if(teachersId === req.user) continue
-                        console.log("mewo " + teachersId)
-                        console.log("meow22 " + req.user)
-                        name = (await User.findById(teachersId, {}, {}).exec())
-                        teachers.push(name)
+                    if(section) {
+                        const teachersSection = section.teachers
+                        for (const teachersId of teachersSection) {
+                            if (teachersId === req.user) continue
+                            console.log("mewo " + teachersId)
+                            console.log("meow22 " + req.user)
+                            name = (await User.findById(teachersId, {}, {}).exec())
+                            if(name)
+                            teachers.push(name)
+                        }
                     }
                 }catch (err){
+                    flag = 1
                     return res.status(400).json({message:err.message})
                 }
 
             })
         )
+        if(flag) return 
         if(!teachers)
             return res.status(400).json("some error occurred while fetching the students")
     }
