@@ -98,12 +98,12 @@ module.exports.addStudentToSection = async(req, res) =>{
     for (let index in req.body) {
         const {userId} = req.body[index];
         try {
+            console.log("a7777 " + userId)
             const student = await User.findOne({userId:userId, role:'student'})
             if(!student) {
                 console.log('hard0')
                 return res.status(404).json(`student ${userId} not found`)
             }
-            console.log("whatever: " + student.userId)
             students.push(student._id)
         }
         catch(err) {
@@ -112,9 +112,7 @@ module.exports.addStudentToSection = async(req, res) =>{
         }
     }
     try {
-        const sectionOld = await Section.findOneAndUpdate({sectionId: sectionId}, {
-            $addToSet: {students: students}
-        }, {new: true})
+        const sectionOld = await Section.findOne({sectionId: sectionId})
 
         const oldS = sectionOld.students.length
 
@@ -124,8 +122,8 @@ module.exports.addStudentToSection = async(req, res) =>{
         }, {new: true})
 
         const newS  = sectionNew.students.length
+        await updateSectionForStudents(students, sectionNew._id)
 
-        await updateSectionForStudents(students, section._id)
         if(oldS === newS){
             return res.status(200).json('Some students were already added, we have handled it')
         }
