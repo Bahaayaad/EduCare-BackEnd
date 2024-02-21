@@ -29,7 +29,7 @@ const updateSec = async (studentsIds, teacherId, courseId, section) =>{
 
 
 module.exports.createSection = async (req, res) => {
-    const curUser = await User.findById(req.user).select('role')
+    const curUser = await User.findById(req.user)
     if(curUser.role!=='admin'){
         return res.status(401).json('Not authorized')
     }
