@@ -25,7 +25,7 @@ module.exports.signup = async (req, res) => {
           return res.status(400).json(err.message);
       }
     }
-    res.status(201).json({user:user._id});
+    res.status(201).json(user);
 }
   
 module.exports.login= async (req, res) => {
