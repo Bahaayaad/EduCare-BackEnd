@@ -24,7 +24,7 @@ module.exports.listTeachers = async (req, res) => {
                 try {
                     const section = await Section.findById(sectionId)
                     if(section) {
-                        const teachersSection = section.teachers
+                        const teachersSection = section.teacher
                         for (const teachersId of teachersSection) {
                             if (teachersId === req.user) continue
                             console.log("mewo " + teachersId)
