@@ -134,11 +134,15 @@ module.exports.listCourses = async (req, res) => {
             sections.map(async (sectionId) => {
                 try {
                     const section = await Section.findById(sectionId)
-                    if(section)
+                    if(!section) {
+                        flag = 1
                         return res.status(400).json('no sections were found')
+                    }
                     const course = await Courses.findById(section.course)
-                    if(!course)
+                    if(!course) {
+                        flag = 1
                         return res.status(400).json('The course were not found')
+                    }
                     courses.add(course)
                 }catch (err) {
                     flag = 1
