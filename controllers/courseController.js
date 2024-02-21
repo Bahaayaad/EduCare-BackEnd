@@ -217,15 +217,20 @@ module.exports.editCourses = async (req, res) => {
 }
 module.exports.editSection = async (req, res) =>{
     const curUser = await User.findById(req.user).select('userId role')
+    const teacher = req.body.teacher
+    const {room, time, days} = req.body
+    const getTeacher = await User.findOne({userId: teacher}).select('_id')
+    if(!getTeacher)
+        return res.status(404).json('teacher not found')
 
-    const sectionId = String(req.params.id)
+    const sectionId = req.params.id
     if(curUser.role!=='admin')
         if(sectionId !== curUser.userId){
             return res.status(401).json('invalid userId')
         }
     const updateSectionData = req.body
     try{
-        const updateSection = await Section.findOneAndUpdate({sectionId:req.params.id}, updateSectionData, {new:true})
+        const updateSection = await Section.findOneAndUpdate({sectionId:req.params.id}, {teacher:getTeacher._id,room,time,days}, {new:true})
         if(!updateSection){
             return res.status(404).json({error:'User not found'})
         }
