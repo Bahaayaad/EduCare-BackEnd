@@ -126,6 +126,9 @@ module.exports.listCourses = async (req, res) => {
     }
 
     else if(curUser.role === 'teacher' || curUser.role === 'student') {
+        let flag = 0
+        if(![curUser.sections])
+            return res.status(400).json('not found')
         const sections = [curUser.sections]
         await Promise.all(
             sections.map(async (sectionId) => {
@@ -134,12 +137,14 @@ module.exports.listCourses = async (req, res) => {
                     const course = await Courses.findById(section.course)
                     courses.add(course)
                 }catch (err) {
+                    flag = 1
                     console.log(err.message)
                     return res.status(404).json(err.message)
                 }
 
             })
         )
+        if(flag) return
     }
     else{
         return res.status(401).json({ message: 'Unauthorized' })
@@ -246,7 +251,7 @@ module.exports.deleteCourse = async (req, res) =>{
                 )
             }
         }
-        // delete section
+        // delete course
         const courseDelete = await Courses.deleteOne({courseId: courseId})
         return res.status(200).json(courseDelete)
     }catch (err){
