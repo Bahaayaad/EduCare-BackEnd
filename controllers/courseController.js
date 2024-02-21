@@ -212,7 +212,7 @@ module.exports.editSection = async (req, res) =>{
         }
     const updateSectionData = req.body
     try{
-        const updateSection = await Section.findOneAndUpdate({userId:req.params.id}, updateSectionData, {new:true})
+        const updateSection = await Section.findOneAndUpdate({sectionId:req.params.id}, updateSectionData, {new:true})
         if(!updateSection){
             return res.status(404).json({error:'User not found'})
         }
