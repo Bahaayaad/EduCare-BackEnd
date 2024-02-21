@@ -84,3 +84,24 @@ module.exports.editTeacher = async (req, res) => {
 
 }
 
+module.exports.editMaterial = async (req, res) => {
+    const curUser = await User.findById(req.user)
+    if(curUser.role !== 'teacher'){
+        return res.status(401).json('Unauthorized user')
+    }
+    const curSec = req.params.id
+    const sections = curUser.sections
+    if(!sections){
+        return res.status(401).json('Unauthorized user')
+    }
+    try {
+        const compare = await Section.findOne({sectionId: curSec})
+        const result = await User.findOne({_id: req.user, sections: {$in: compare._id}})
+        if (!result)
+            return res.status(401).json('Unauthorized user')
+        return res.status(200).json(result)
+    }catch (err){
+        return res.status(400).json({message:err.message})
+    }
+}
+

@@ -5,4 +5,5 @@ const router = Router()
 router.get('/teachers', verifyTokenAuth, teacherController.listTeachers)
 router.delete('/teachers/:id', verifyTokenAuth, teacherController.deleteTeacher)
 router.put('/teachers/:id', verifyTokenAuth, teacherController.editTeacher)
+router.get('/material/:id', verifyTokenAuth, teacherController.editMaterial )
 module.exports = router
