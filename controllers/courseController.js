@@ -112,7 +112,7 @@ module.exports.soonToDelete = async (req, res) =>{
 
 module.exports.listCourses = async (req, res) => {
     const curUser = await User.findById(req.user)
-    let courses = new Set()
+    let courses = []
     if(curUser.role === 'admin'){
         try {
             courses = await Courses.find({})
@@ -143,7 +143,7 @@ module.exports.listCourses = async (req, res) => {
                         flag = 1
                         return res.status(400).json('The course were not found')
                     }
-                    courses.add(course)
+                    courses.push(course)
                 }catch (err) {
                     flag = 1
                     console.log(err.message)
