@@ -191,7 +191,7 @@ module.exports.editCourses = async (req, res) => {
         }
     const updateCourseData = req.body
     try{
-        const updateCourse = await Courses.findOneAndUpdate({userId:req.params.id}, updateCourseData, {new:true})
+        const updateCourse = await Courses.findOneAndUpdate({courseId:req.params.id}, updateCourseData, {new:true})
         if(!updateCourse){
             return res.status(404).json({error:'User not found'})
         }
