@@ -111,7 +111,7 @@ module.exports.soonToDelete = async (req, res) =>{
 }
 
 module.exports.listCourses = async (req, res) => {
-    const curUser = await User.findById(req.user).select('role')
+    const curUser = await User.findById(req.user)
     let courses = new Set()
     if(curUser.role === 'admin'){
         try {
