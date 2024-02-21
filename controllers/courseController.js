@@ -135,6 +135,8 @@ module.exports.listCourses = async (req, res) => {
                 try {
                     const section = await Section.findById(sectionId)
                     const course = await Courses.findById(section.course)
+                    if(!course)
+                        return res.status(400).json('The course were not found')
                     courses.add(course)
                 }catch (err) {
                     flag = 1
