@@ -41,7 +41,7 @@ module.exports.listTeachers = async (req, res) => {
 
             })
         )
-        if(flag) return 
+        if(flag) return
         if(!teachers)
             return res.status(400).json("some error occurred while fetching the students")
     }
