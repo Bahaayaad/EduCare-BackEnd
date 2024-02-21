@@ -76,17 +76,19 @@ module.exports.editStudent = async (req, res) => {
     }
 }
 
-const updateSectionForStudents = async (studentsIds, section) => {
-    if (studentsIds.length)
+const updateSectionForStudents = async (studentsIds, sectionId) => {
+    if (studentsIds.length) {
         await Promise.all(
             studentsIds.map(async (studentId) => {
+                console.log("this should be ok " + sectionId)
                 await User.findByIdAndUpdate(
                     studentId,
-                    {$addToSet: {sections: section._id}},
+                    {$addToSet: {sections: sectionId}},
                     {new: true}
                 );
             })
         )
+    }
     console.log('this should be done')
 }
 module.exports.addStudentToSection = async(req, res) =>{
@@ -115,19 +117,19 @@ module.exports.addStudentToSection = async(req, res) =>{
         const sectionOld = await Section.findOne({sectionId: sectionId})
 
         const oldS = sectionOld.students.length
-
-
+        console.log('lets check ' + sectionId)
+        await updateSectionForStudents(students, sectionOld._id)
         const sectionNew = await Section.findOneAndUpdate({sectionId: sectionId}, {
             $addToSet: {students: students}
         }, {new: true})
 
         const newS  = sectionNew.students.length
-        await updateSectionForStudents(students, sectionNew._id)
+        console.log("enta za3")
 
         if(oldS === newS){
             return res.status(200).json('Some students were already added, we have handled it')
         }
-        res.status(200).json(section)
+        res.status(200).json(sectionOld)
     }catch (err){
         console.log('hard2')
         res.status(400).json({message: err.message})
