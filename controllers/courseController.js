@@ -248,6 +248,33 @@ module.exports.deleteCourse = async (req, res) =>{
             if(courseSections.length > 0){
                 await Promise.all(
                     courseSections.map(async (sectionId) => {
+                        const section = await Section.findOne({sectionId: sectionId})
+                        if(!section){
+                            return res.status(400).json('Section not found')
+                        }
+                        //delete section from students
+                        const sectionStd = section.students
+                        if(sectionStd){
+                            if(sectionStd.length > 0){
+                                await Promise.all(
+                                    sectionStd.map(async (studentId) => {
+                                        await User.findByIdAndUpdate(
+                                            studentId,
+                                            { $pull: { sections: section._id } },
+                                            { new: true }
+                                        );
+                                    })
+                                )
+                            }
+                        }
+
+                        //delete section from teacher
+                        const sectionTch = section.teacher
+                        if(sectionTch)
+                            await User.findByIdAndUpdate(
+                                sectionTch,
+                                { $pull: { sections: section._id } },
+                                { new: true })
                         await Section.findByIdAndDelete(sectionId);
                     })
                 )
